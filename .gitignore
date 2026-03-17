@@ -1,0 +1,4 @@
+config/database.php
+public/uploads/
+cuidarte_spa.sql
+.amazonq/
