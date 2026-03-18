@@ -60,12 +60,33 @@ class ReservasController extends Controller {
         ]);
 
         $this->rm->bloquearHorario($horario_id);
-        $this->enviarConfirmacion($email, $nombre, $servicio['nombre'] ?? '', $modalidad, $monto);
-        $this->redirect('/reservar/confirmacion/' . $id);
+
+        // Redirigir a Flow para pago
+        require_once __DIR__ . '/../models/Flow.php';
+        $concepto = 'Reserva #' . str_pad($id, 6, '0', STR_PAD_LEFT) . ' - ' . ($servicio['nombre'] ?? '') . ' - ' . SITE_NAME;
+        $flow = Flow::crearOrden($id, $monto, $email, $concepto, 'reserva');
+
+        if (!empty($flow['url']) && !empty($flow['token'])) {
+            header('Location: ' . $flow['url'] . '?token=' . $flow['token']);
+            exit;
+        } else {
+            // Si Flow falla redirigir a confirmación igual
+            $this->redirect('/reservar/confirmacion/' . $id);
+        }
     }
 
     public function confirmacion($id) {
-        $reserva = $this->rm->find((int)$id);
+        $db = getDB();
+        $st = $db->prepare(
+            "SELECT r.*, s.nombre as servicio_nombre, s.duracion_minutos,
+                    h.fecha, h.hora_inicio, h.hora_fin
+             FROM reservas r
+             JOIN servicios s ON r.servicio_id = s.id
+             JOIN horarios_disponibles h ON r.horario_id = h.id
+             WHERE r.id = ? LIMIT 1"
+        );
+        $st->execute([(int)$id]);
+        $reserva = $st->fetch();
         $this->render('reserva_confirmacion', [
             'reserva'   => $reserva,
             'pageTitle' => 'Reserva Confirmada | ' . SITE_NAME,

@@ -8,16 +8,23 @@ class Flow {
         return hash_hmac('sha256', $cadena, FLOW_SECRET_KEY);
     }
 
-    public static function crearOrden(int $pedidoId, float $monto, string $email, string $concepto): array {
+    public static function crearOrden(int $id, float $monto, string $email, string $concepto, string $tipo = 'pedido'): array {
+        $urlConfirmacion = $tipo === 'reserva'
+            ? BASE_URL . '/pago/confirmar-reserva'
+            : BASE_URL . '/pago/confirmar';
+        $urlRetorno = $tipo === 'reserva'
+            ? BASE_URL . '/pago/retorno-reserva'
+            : BASE_URL . '/pago/retorno';
+
         $params = [
-            'apiKey'       => FLOW_API_KEY,
-            'commerceOrder'=> (string)$pedidoId,
-            'subject'      => $concepto,
-            'currency'     => 'CLP',
-            'amount'       => (int)round($monto),
-            'email'        => $email,
-            'urlConfirmation' => BASE_URL . '/pago/confirmar',
-            'urlReturn'       => BASE_URL . '/pago/retorno',
+            'apiKey'          => FLOW_API_KEY,
+            'commerceOrder'   => $tipo . '_' . $id,
+            'subject'         => $concepto,
+            'currency'        => 'CLP',
+            'amount'          => (int)round($monto),
+            'email'           => $email,
+            'urlConfirmation' => $urlConfirmacion,
+            'urlReturn'       => $urlRetorno,
         ];
         $params['s'] = self::firmar($params);
 

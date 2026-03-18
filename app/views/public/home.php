@@ -2,20 +2,20 @@
 <section class="wc-hero">
     <div class="wc-hero-slider">
         <div class="wc-hero-slide active">
-            <img src="<?= BASE_URL ?>/public/images/banner/banner.png" alt="Aromaterapia">
+            <img src="<?= BASE_URL ?>/public/images/banner/<?= htmlspecialchars(config('banner_hero_1')) ?>" alt="Aromaterapia">
         </div>
         <div class="wc-hero-slide">
-            <img src="<?= BASE_URL ?>/public/images/banner/Bienestar.png" alt="Bienestar">
+            <img src="<?= BASE_URL ?>/public/images/banner/<?= htmlspecialchars(config('banner_hero_2')) ?>" alt="Bienestar">
         </div>
         <div class="wc-hero-slide">
-            <img src="<?= BASE_URL ?>/public/images/banner/Aceites.png" alt="Aceites Esenciales">
+            <img src="<?= BASE_URL ?>/public/images/banner/<?= htmlspecialchars(config('banner_hero_3')) ?>" alt="Aceites Esenciales">
         </div>
     </div>
     <div class="wc-hero-content">
-        <p>Bienestar físico, emocional y mental a través de la aromaterapia y el acompañamiento consciente</p>
+        <p><?= htmlspecialchars(config('hero_texto')) ?></p>
         <div class="d-flex gap-3 justify-content-center flex-wrap">
-            <a href="<?= BASE_URL ?>/productos" class="btn-wc-primary">🌿 Ver Productos</a>
-            <a href="<?= BASE_URL ?>/reservar" class="btn-wc-secondary">📅 Reservar Sesión</a>
+            <a href="<?= BASE_URL ?>/productos" class="btn-wc-primary">🌿 <?= htmlspecialchars(config('hero_btn1')) ?></a>
+            <a href="<?= BASE_URL ?>/reservar" class="btn-wc-secondary">📅 <?= htmlspecialchars(config('hero_btn2')) ?></a>
         </div>
     </div>
     <div class="wc-slider-dots">
@@ -30,13 +30,9 @@
     <div class="container">
         <div class="row align-items-center g-5">
             <div class="col-lg-6">
-                <h2 style="font-size:2.2rem;margin-bottom:1rem">¿Qué es la Aromaterapia?</h2>
-                <p style="color:var(--wc-text-soft);font-size:1.1rem;line-height:1.8;margin-bottom:1.5rem">
-                    La aromaterapia es una terapia natural que utiliza aceites esenciales puros extraídos de plantas para apoyar el bienestar físico, emocional y mental. A través del olfato y la piel, sus aromas ayudan a equilibrar el sistema nervioso y favorecer la calma.
-                </p>
-                <p style="color:var(--wc-text-soft);font-size:1.05rem;line-height:1.8;margin-bottom:2rem">
-                    En Cuidarte Spa trabajamos con aceites esenciales <strong>dōTerra</strong> de grado terapéutico certificado, acompañando a madres y cuidadoras en su camino de autocuidado consciente.
-                </p>
+                <h2 style="font-size:2.2rem;margin-bottom:1rem"><?= htmlspecialchars(config('home_aromaterapia_titulo')) ?></h2>
+                <p style="color:var(--wc-text-soft);font-size:1.1rem;line-height:1.8;margin-bottom:1.5rem"><?= htmlspecialchars(config('home_aromaterapia_p1')) ?></p>
+                <p style="color:var(--wc-text-soft);font-size:1.05rem;line-height:1.8;margin-bottom:2rem"><?= htmlspecialchars(config('home_aromaterapia_p2')) ?></p>
                 <a href="<?= BASE_URL ?>/nosotros" class="btn-wc-outline">Conoce más sobre nosotros</a>
             </div>
             <div class="col-lg-6">
@@ -171,10 +167,8 @@
 <!-- CTA FINAL -->
 <section class="wc-section" style="background:linear-gradient(135deg,var(--wc-blue-dark),#2d1b4e);color:white;text-align:center">
     <div class="container">
-        <h2 style="color:white;font-size:2.5rem;margin-bottom:1rem">¿Lista para comenzar tu camino?</h2>
-        <p style="opacity:0.85;font-size:1.2rem;margin-bottom:2rem;max-width:600px;margin-left:auto;margin-right:auto">
-            Reserva tu sesión o explora nuestros productos de aromaterapia
-        </p>
+        <h2 style="color:white;font-size:2.5rem;margin-bottom:1rem"><?= htmlspecialchars(config('home_cta_titulo')) ?></h2>
+        <p style="opacity:0.85;font-size:1.2rem;margin-bottom:2rem;max-width:600px;margin-left:auto;margin-right:auto"><?= htmlspecialchars(config('home_cta_texto')) ?></p>
         <div class="d-flex gap-3 justify-content-center flex-wrap">
             <a href="<?= BASE_URL ?>/reservar" class="btn-wc-primary">📅 Reservar Sesión</a>
             <a href="<?= BASE_URL ?>/productos" class="btn-wc-secondary">🌿 Ver Productos</a>

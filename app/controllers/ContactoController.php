@@ -12,6 +12,10 @@ class ContactoController extends Controller {
             $mensaje = $this->sanitize($_POST['mensaje'] ?? '');
 
             if ($nombre && $email && $mensaje) {
+                getDB()->prepare(
+                    "INSERT INTO mensajes_contacto (nombre, email, mensaje) VALUES (?,?,?)"
+                )->execute([$nombre, $email, $mensaje]);
+
                 $to = config('email_contacto');
                 $asunto = "Contacto desde " . SITE_NAME . " - $nombre";
                 $body = "Nombre: $nombre\nEmail: $email\n\nMensaje:\n$mensaje";

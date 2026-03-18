@@ -8,7 +8,7 @@
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:wght@400;600;700;800&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="<?= BASE_URL ?>/public/css/style.css">
 </head>
@@ -289,27 +289,18 @@ function seleccionarHorario(id, el) {
 
 function enviarReserva() {
     const form = document.getElementById('reservaForm');
-    if (!form.checkValidity()) {
+    if (!form.checkValidity() || !document.getElementById('horarioId').value) {
         document.getElementById('reservaError').style.display = 'block';
         return;
     }
     document.getElementById('reservaError').style.display = 'none';
-    const formData = new FormData(form);
-    formData.append('csrf_token', '<?= csrfToken() ?>');
-    fetch(`${BASE_URL}/reservar`, { method: 'POST', body: formData })
-        .then(() => {
-            document.getElementById('modalFormBody').innerHTML = `
-                <div style="text-align:center;padding:1rem 0">
-                    <div style="width:80px;height:80px;background:linear-gradient(135deg,var(--wc-blue),var(--wc-pink));border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;color:white;font-size:2.5rem;box-shadow:0 8px 25px rgba(74,144,217,0.3)">✓</div>
-                    <h4 style="font-weight:700;color:var(--wc-blue-dark);margin-bottom:0.75rem">¡Reserva Confirmada!</h4>
-                    <p style="color:var(--wc-text-soft)">Nos pondremos en contacto contigo pronto para confirmar tu horario.</p>
-                </div>`;
-            document.getElementById('modalFormFooter').innerHTML = `<button class="btn-wc-primary" data-bs-dismiss="modal">Cerrar</button>`;
-        })
-        .catch(() => {
-            document.getElementById('reservaError').textContent = 'Error al enviar. Intenta nuevamente.';
-            document.getElementById('reservaError').style.display = 'block';
-        });
+    form.method = 'POST';
+    form.action = BASE_URL + '/reservar';
+    const csrf = document.createElement('input');
+    csrf.type = 'hidden'; csrf.name = 'csrf_token';
+    csrf.value = '<?= csrfToken() ?>';
+    form.appendChild(csrf);
+    form.submit();
 }
 
 // Resetear modal al cerrarse

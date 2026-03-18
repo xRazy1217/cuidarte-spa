@@ -1,9 +1,9 @@
 <!-- BANNER -->
 <section class="wc-page-banner">
-    <img src="<?= BASE_URL ?>/public/images/banner/Nosotros.png" alt="Propósito">
+    <img src="<?= BASE_URL ?>/public/images/banner/<?= htmlspecialchars(config('banner_nosotros')) ?>" alt="Propósito">
     <div class="wc-page-banner-content">
-        <h1>Nuestro Propósito 🌸</h1>
-        <p>Acompañarte en tu camino hacia el bienestar integral</p>
+        <h1><?= htmlspecialchars(config('nosotros_banner_titulo')) ?></h1>
+        <p><?= htmlspecialchars(config('nosotros_banner_subtitulo')) ?></p>
     </div>
 </section>
 
@@ -55,12 +55,8 @@
         <div class="row align-items-center g-5">
             <div class="col-lg-6">
                 <h2 style="font-size:2rem;margin-bottom:1.5rem">Nuestra Filosofía</h2>
-                <p style="color:var(--wc-text-soft);line-height:1.9;margin-bottom:1rem">
-                    En <strong>Cuidarte Spa</strong> creemos que el autocuidado es un acto de amor propio. Trabajamos con aceites esenciales <strong>dōTerra</strong> de grado terapéutico certificado, acompañando a madres y cuidadoras en su camino hacia el bienestar integral.
-                </p>
-                <p style="color:var(--wc-text-soft);line-height:1.9;margin-bottom:2rem">
-                    Nuestras mezclas están diseñadas con intención y conocimiento, pensadas para acompañar diferentes momentos de tu vida: desde la calma en momentos de estrés, hasta el apoyo en procesos de crianza consciente.
-                </p>
+                <p style="color:var(--wc-text-soft);line-height:1.9;margin-bottom:1rem"><?= htmlspecialchars(config('nosotros_filosofia_p1')) ?></p>
+                <p style="color:var(--wc-text-soft);line-height:1.9;margin-bottom:2rem"><?= htmlspecialchars(config('nosotros_filosofia_p2')) ?></p>
                 <div class="d-flex gap-3 flex-wrap">
                     <a href="<?= BASE_URL ?>/productos" class="btn-wc-primary">Ver Productos</a>
                     <a href="<?= BASE_URL ?>/servicios" class="btn-wc-outline">Ver Servicios</a>

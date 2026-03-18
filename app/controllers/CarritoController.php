@@ -168,7 +168,7 @@ class CarritoController extends Controller {
 
         // Redirigir a Flow
         require_once __DIR__ . '/../models/Flow.php';
-        $flow = Flow::crearOrden($pedido_id, $total, $email, 'Pedido #' . str_pad($pedido_id, 6, '0', STR_PAD_LEFT) . ' - ' . SITE_NAME);
+        $flow = Flow::crearOrden($pedido_id, $total, $email, 'Pedido #' . str_pad($pedido_id, 6, '0', STR_PAD_LEFT) . ' - ' . SITE_NAME, 'pedido');
 
         if (!empty($flow['url']) && !empty($flow['token'])) {
             header('Location: ' . $flow['url'] . '?token=' . $flow['token']);

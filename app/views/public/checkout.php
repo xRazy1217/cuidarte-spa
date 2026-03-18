@@ -8,7 +8,13 @@
     </div>
 
     <?php if (isset($_GET['error'])): ?>
-    <div class="wc-alert-error">Por favor completa todos los campos requeridos.</div>
+    <div class="wc-alert-error">
+        <?php if ($_GET['error'] === 'pago'): ?>
+            ❌ Tu pago fue rechazado o cancelado. Por favor intenta nuevamente.
+        <?php else: ?>
+            Por favor completa todos los campos requeridos.
+        <?php endif; ?>
+    </div>
     <?php endif; ?>
 
     <div class="row g-4">

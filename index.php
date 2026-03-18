@@ -100,6 +100,8 @@ if ($controller === 'pago') {
     $obj = new PagoController();
     if ($action === 'confirmar') $obj->confirmar();
     elseif ($action === 'retorno') $obj->retorno();
+    elseif ($action === 'confirmar-reserva') $obj->confirmarReserva();
+    elseif ($action === 'retorno-reserva') $obj->retornoReserva();
     exit;
 }
 
