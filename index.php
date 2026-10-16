@@ -144,9 +144,8 @@ $actionCamel = lcfirst(str_replace(' ', '', ucwords(str_replace('-', ' ', $actio
 $route = $map[$controller] ?? null;
 
 if (!$route) {
-    http_response_code(404);
     require_once __DIR__ . '/app/controllers/HomeController.php';
-    (new HomeController())->render('404', ['pageTitle' => 'Página no encontrada | ' . SITE_NAME]);
+    (new HomeController())->notFound();
     exit;
 }
 
@@ -163,7 +162,6 @@ if (file_exists($ctrlFile)) {
         $obj->{$route[1]}($param);
     }
 } else {
-    http_response_code(404);
     require_once __DIR__ . '/app/controllers/HomeController.php';
-    (new HomeController())->render('404', ['pageTitle' => 'Página no encontrada | ' . SITE_NAME]);
+    (new HomeController())->notFound();
 }

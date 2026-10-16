@@ -4,6 +4,11 @@ require_once __DIR__ . '/../models/ProductoModel.php';
 require_once __DIR__ . '/../models/OtrosModels.php';
 
 class HomeController extends Controller {
+    public function notFound() {
+        http_response_code(404);
+        $this->render('404', ['pageTitle' => 'Página no encontrada | ' . SITE_NAME]);
+    }
+
     public function index() {
         $pm = new ProductoModel();
         $sm = new ServicioModel();
