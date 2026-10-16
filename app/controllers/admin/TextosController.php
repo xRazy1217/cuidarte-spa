@@ -46,6 +46,11 @@ class TextosController extends AdminController {
             $this->redirect('/admin/textos?error=tipo');
         }
 
+        $mime = mime_content_type($file['tmp_name']);
+        if (!in_array($mime, ['image/jpeg', 'image/png', 'image/webp'], true) || $file['size'] > 5 * 1024 * 1024) {
+            $this->redirect('/admin/textos?error=tipo');
+        }
+
         $nombre  = bin2hex(random_bytes(8)) . '.' . $ext;
         $destino = realpath(__DIR__ . '/../../../public/images/banner') . DIRECTORY_SEPARATOR . $nombre;
 

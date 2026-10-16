@@ -49,18 +49,22 @@ class ClienteController extends Controller {
         if ($this->isPost()) {
             $email = $this->sanitize($_POST['email'] ?? '');
             $pass  = $_POST['password'] ?? '';
+            $rlKey = 'cliente-login:' . clientIp();
             $db    = getDB();
             $st    = $db->prepare("SELECT * FROM usuarios WHERE email=? AND rol='cliente' LIMIT 1");
             $st->execute([$email]);
             $user  = $st->fetch();
 
-            if (!$user) {
-                $error = 'Email no encontrado.';
+            if (rlBloqueado($rlKey, 10, 900)) {
+                $error = 'Demasiados intentos. Espera 15 minutos.';
+            } elseif (!$user || !password_verify($pass, $user['password'] ?? '')) {
+                // Mensaje genérico: no revela si el email existe
+                rlRegistrar($rlKey, 900);
+                $error = 'Email o contraseña incorrectos.';
             } elseif (!$user['activo']) {
                 $error = 'Tu cuenta no está activada. Revisa tu email.';
-            } elseif (!password_verify($pass, $user['password'] ?? '')) {
-                $error = 'Contraseña incorrecta.';
             } else {
+                rlLimpiar($rlKey);
                 session_regenerate_id(true);
                 $_SESSION['usuario'] = [
                     'id'     => $user['id'],

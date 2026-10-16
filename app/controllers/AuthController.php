@@ -12,7 +12,10 @@ class AuthController extends Controller {
             // Rate limiting básico: máx 5 intentos por 15 minutos
             $intentos = $_SESSION['login_intentos'] ?? 0;
             $ultimo   = $_SESSION['login_ultimo'] ?? 0;
-            if ($intentos >= 5 && (time() - $ultimo) < 900) {
+            $rlKey = 'admin-login:' . clientIp();
+            if (rlBloqueado($rlKey, 10, 900)) {
+                $error = 'Demasiados intentos. Espera 15 minutos.';
+            } elseif ($intentos >= 5 && (time() - $ultimo) < 900) {
                 $error = 'Demasiados intentos. Espera 15 minutos.';
             } else {
                 if ((time() - $ultimo) >= 900) $_SESSION['login_intentos'] = 0;
@@ -27,6 +30,7 @@ class AuthController extends Controller {
                     session_regenerate_id(false); // regenerar ID sin destruir datos
                     $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // regenerar token CSRF
                     $_SESSION['login_intentos'] = 0;
+                    rlLimpiar($rlKey);
                     $_SESSION['usuario'] = [
                         'id'     => $user['id'],
                         'nombre' => $user['nombre'],
@@ -34,6 +38,7 @@ class AuthController extends Controller {
                     ];
                     $this->redirect($user['rol'] === 'admin' ? '/admin' : '/');
                 } else {
+                    rlRegistrar($rlKey, 900);
                     $_SESSION['login_intentos'] = $intentos + 1;
                     $_SESSION['login_ultimo']   = time();
                     $error = 'Credenciales incorrectas.';
