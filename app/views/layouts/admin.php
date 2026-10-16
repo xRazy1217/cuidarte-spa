@@ -59,7 +59,7 @@
     </div>
 </div>
 
-<script src="<?= BASE_URL ?>/public/js/admin.js"></script>
+<script src="<?= assetUrl('public/js/admin.js') ?>"></script>
 <script>
 // Inyectar CSRF token en todos los formularios POST
 document.querySelectorAll('form[method="post"], form[method="POST"]').forEach(f => {
