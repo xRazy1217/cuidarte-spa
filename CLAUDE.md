@@ -43,8 +43,15 @@ Producción: https://cuidartelaserena.cl (SiteGround). Repo: github.com/xRazy121
 ## Acceso
 - SSH: `ssh cuidartelaserena` (puerto 18765, clave en `~/.ssh`). Raíz web: `~/www/cuidartelaserena.cl/public_html`.
 
+## Seguridad: estado
+- CSRF: `csrfVerify()` en `config/database.php` (no versionado) es un no-op. `csrfCheck()` (`app/helpers/security.php`)
+  valida y, por defecto, **solo registra** los POST sin token en `logs/php_errors.log` (`[CSRF] POST sin token válido: <ruta>`).
+  Para bloquear: `define('CSRF_ENFORCE', true)` en `config/database.php`, **después** de dar token a los formularios
+  que hoy no lo envían: `public/{reservar,servicios,activar,nueva_password}.php`, `cliente/perfil.php`, vistas admin de
+  blog/categorias/cupones/mensajes/productos/reservas/servicio_form, y los POST AJAX de `public/js/main.js`.
+- Login admin y cliente: límite por IP (10 fallos / 15 min, archivos en `sys_get_temp_dir()/cuidarte_rl`).
+- `public/uploads/.htaccess` impide ejecutar scripts (el resto de `public/uploads/` no se versiona).
+- Credenciales: el usuario decidió (2026-10-16) **no rotar** las de BD/Flow/SMTP pese a la exposición previa del zip.
+
 ## Pendientes conocidos
-- Rotar credenciales BD / Flow / SMTP (estuvieron en un zip público desde 29-abr-2026; zip ya retirado).
-- Completar `database.example.php`.
-- CSRF, validación de subidas y rate limit del login admin sin revisar.
-- Copias sobrantes: `cuidarte-spa/` en el repo y `~/www/cuidartelaserena.cl/cuidarte-spa/` en el servidor.
+- Dar token CSRF a los formularios listados y activar `CSRF_ENFORCE` (revisar antes el log en busca de POST sin token).
