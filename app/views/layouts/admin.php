@@ -21,6 +21,7 @@
                 ['url' => '/admin',                  'icon' => '📊', 'label' => 'Dashboard'],
                 ['url' => '/admin/productos',         'icon' => '🌿', 'label' => 'Productos'],
                 ['url' => '/admin/categorias',        'icon' => '🏷️', 'label' => 'Categorías'],
+                ['url' => '/admin/servicios',         'icon' => '💆', 'label' => 'Servicios'],
                 ['url' => '/admin/ventas',            'icon' => '💰', 'label' => 'Ventas'],
                 ['url' => '/admin/reservas',          'icon' => '📅', 'label' => 'Reservas'],
                 ['url' => '/admin/clientes',          'icon' => '👥', 'label' => 'Clientes'],

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/Controller.php';
+require_once __DIR__ . '/../models/Mailer.php';
 
 class ContactoController extends Controller {
     public function index() {
@@ -18,8 +19,14 @@ class ContactoController extends Controller {
 
                 $to = config('email_contacto');
                 $asunto = "Contacto desde " . SITE_NAME . " - $nombre";
-                $body = "Nombre: $nombre\nEmail: $email\n\nMensaje:\n$mensaje";
-                @mail($to, $asunto, $body, "From: $email");
+                $cuerpo = "<h3>Nuevo mensaje de contacto</h3>";
+                $cuerpo .= "<p><strong>Nombre:</strong> $nombre</p>";
+                $cuerpo .= "<p><strong>Email:</strong> $email</p>";
+                $cuerpo .= "<p><strong>Mensaje:</strong></p>";
+                $cuerpo .= "<p>" . nl2br(htmlspecialchars($mensaje)) . "</p>";
+                
+                $mailer = new Mailer();
+                $mailer->enviar($to, $asunto, $cuerpo, true);
                 $enviado = true;
             } else {
                 $error = 'Por favor completa todos los campos.';

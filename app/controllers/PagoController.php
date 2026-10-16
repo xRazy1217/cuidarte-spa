@@ -2,6 +2,7 @@
 require_once __DIR__ . '/Controller.php';
 require_once __DIR__ . '/../models/Flow.php';
 require_once __DIR__ . '/../models/OtrosModels.php';
+require_once __DIR__ . '/../models/Mailer.php';
 
 class PagoController extends Controller {
 
@@ -111,9 +112,14 @@ class PagoController extends Controller {
     private function enviarConfirmacionReserva($email, $nombre, $reservaId, $monto) {
         $num    = str_pad($reservaId, 6, '0', STR_PAD_LEFT);
         $asunto = "Reserva confirmada #$num | " . SITE_NAME;
-        $msg    = "Hola $nombre,\n\nTu pago fue recibido y tu reserva #$num está confirmada.\n"
-                . "Monto pagado: $" . number_format($monto, 0, ',', '.') . "\n\n"
-                . "Nos contactaremos contigo para coordinar los detalles.\n\n" . SITE_NAME;
-        @mail($email, $asunto, $msg, 'From: ' . config('email_contacto'));
+        $cuerpo = "<h2>¡Reserva Confirmada!</h2>";
+        $cuerpo .= "<p>Hola <strong>$nombre</strong>,</p>";
+        $cuerpo .= "<p>Tu pago fue recibido y tu reserva <strong>#$num</strong> está confirmada.</p>";
+        $cuerpo .= "<p><strong>Monto pagado:</strong> $" . number_format($monto, 0, ',', '.') . "</p>";
+        $cuerpo .= "<p>Nos contactaremos contigo pronto para coordinar los detalles de tu sesión.</p>";
+        $cuerpo .= "<p>Saludos,<br>" . SITE_NAME . "</p>";
+        
+        $mailer = new Mailer();
+        $mailer->enviar($email, $asunto, $cuerpo, true);
     }
 }

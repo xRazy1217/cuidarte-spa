@@ -21,6 +21,39 @@ class ReservasAdminController extends AdminController {
         $this->redirect('/admin/reservas');
     }
 
+    public function ver($id) {
+        $db = getDB();
+        $st = $db->prepare(
+            "SELECT r.*, s.nombre as servicio_nombre, s.duracion_minutos, s.precio
+             FROM reservas r
+             JOIN servicios s ON r.servicio_id = s.id
+             WHERE r.id = ? LIMIT 1"
+        );
+        $st->execute([(int)$id]);
+        $reserva = $st->fetch();
+
+        if (!$reserva) {
+            $this->redirect('/admin/reservas?error=no_encontrada');
+        }
+
+        if ($this->isPost()) {
+            $estado = $_POST['estado'] ?? 'pendiente';
+            $notas_admin = $this->sanitize($_POST['notas_admin'] ?? '');
+            
+            if (in_array($estado, ['pendiente', 'confirmada', 'cancelada'])) {
+                $db->prepare(
+                    "UPDATE reservas SET estado = ?, notas = ? WHERE id = ?"
+                )->execute([$estado, $notas_admin, $id]);
+                $this->redirect('/admin/reservas?success=actualizada');
+            }
+        }
+
+        $this->render('reservas/detalle', [
+            'reserva' => $reserva,
+            'pageTitle' => 'Detalle Reserva | Admin',
+        ], 'admin');
+    }
+
     public function horarios() {
         $servicios = (new ServicioModel())->getActivos();
         $db = getDB();

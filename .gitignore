@@ -2,3 +2,10 @@ config/database.php
 public/uploads/
 cuidarte_spa.sql
 .amazonq/
+sftp.json
+.vscode/sftp.json
+
+config/database.php
+config/smtp.php
+php_errorlog
+*.zip

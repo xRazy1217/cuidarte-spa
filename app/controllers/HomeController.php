@@ -18,6 +18,9 @@ class HomeController extends Controller {
     }
 
     public function nosotros() {
-        $this->render('nosotros', ['pageTitle' => 'Nuestro Propósito | ' . SITE_NAME]);
+        $this->render('nosotros', [
+            'pageTitle' => 'Quiénes Somos | Terapia RAI y Crianza Consciente en La Serena | ' . SITE_NAME,
+            'pageDesc'  => 'Conoce a Patricia y Elizabeth, fundadoras de CuidArte. Especialistas en Terapia RAI, Aromaterapia y Pedagogía Waldorf en La Serena, Chile.',
+        ]);
     }
 }

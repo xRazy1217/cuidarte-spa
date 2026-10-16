@@ -21,6 +21,7 @@
         <!-- FORMULARIO -->
         <div class="col-lg-7">
             <form method="POST" action="<?= BASE_URL ?>/checkout" id="checkoutForm">
+                <input type="hidden" name="csrf_token" value="<?= csrfToken() ?>">
 
                 <!-- Datos de contacto -->
                 <div class="wc-checkout-card mb-3">

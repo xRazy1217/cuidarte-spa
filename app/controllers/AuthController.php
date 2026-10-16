@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/Controller.php';
 require_once __DIR__ . '/../models/Model.php';
+require_once __DIR__ . '/../models/Mailer.php';
 
 class AuthController extends Controller {
     public function login() {
@@ -23,7 +24,8 @@ class AuthController extends Controller {
                 $user = $st->fetch();
 
                 if ($user && password_verify($pass, $user['password'])) {
-                    session_regenerate_id(true); // prevenir session fixation
+                    session_regenerate_id(false); // regenerar ID sin destruir datos
+                    $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); // regenerar token CSRF
                     $_SESSION['login_intentos'] = 0;
                     $_SESSION['usuario'] = [
                         'id'     => $user['id'],
@@ -47,6 +49,22 @@ class AuthController extends Controller {
         $this->redirect('/login');
     }
 
+    public function activar($token) {
+        if (!$token) $this->redirect('/login');
+        
+        $db = getDB();
+        $st = $db->prepare("SELECT id FROM usuarios WHERE token_activacion=? AND activo=0 LIMIT 1");
+        $st->execute([$token]);
+        $usuario = $st->fetch();
+        
+        if ($usuario) {
+            $db->prepare("UPDATE usuarios SET activo=1, token_activacion=NULL WHERE id=?")->execute([$usuario['id']]);
+            $this->redirect('/login?activado=1');
+        } else {
+            $this->redirect('/login?error=token_invalido');
+        }
+    }
+
     public function registro() {
         $error = '';
         if ($this->isPost()) {
@@ -63,9 +81,27 @@ class AuthController extends Controller {
                 if ($existe->fetch()) {
                     $error = 'El email ya está registrado.';
                 } else {
-                    $db->prepare("INSERT INTO usuarios (nombre,email,password,rol) VALUES (?,?,?,'cliente')")
-                       ->execute([$nombre, $email, password_hash($pass, PASSWORD_DEFAULT)]);
-                    $this->redirect('/login?registro=ok');
+                    // Generar token de activación
+                    $token = bin2hex(random_bytes(32));
+                    $db->prepare("INSERT INTO usuarios (nombre,email,password,rol,activo,token_activacion) VALUES (?,?,?,'cliente',0,?)")
+                       ->execute([$nombre, $email, password_hash($pass, PASSWORD_DEFAULT), $token]);
+                    
+                    // Enviar email de activación
+                    $enlace_activacion = BASE_URL . '/activar-cuenta/' . $token;
+                    $asunto = "Confirma tu email en " . SITE_NAME;
+                    $cuerpo = "<h2>Bienvenido a " . SITE_NAME . "</h2>";
+                    $cuerpo .= "<p>Hola <strong>$nombre</strong>,</p>";
+                    $cuerpo .= "<p>Para activar tu cuenta, haz click en el siguiente enlace:</p>";
+                    $cuerpo .= "<p><a href='$enlace_activacion' style='background:#4A90A4;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;display:inline-block'>Activar mi cuenta</a></p>";
+                    $cuerpo .= "<p>O copia este enlace en tu navegador:</p>";
+                    $cuerpo .= "<p>$enlace_activacion</p>";
+                    $cuerpo .= "<p><small>Este enlace expira en 24 horas.</small></p>";
+                    $cuerpo .= "<p>Saludos,<br>" . SITE_NAME . "</p>";
+                    
+                    $mailer = new Mailer();
+                    $mailer->enviar($email, $asunto, $cuerpo, true);
+                    
+                    $this->redirect('/login?registro=ok&email_enviado=1');
                 }
             }
         }

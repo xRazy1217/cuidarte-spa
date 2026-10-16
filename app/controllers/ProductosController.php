@@ -27,7 +27,8 @@ class ProductosController extends Controller {
             'productos'  => $productos,
             'categorias' => $categorias,
             'cat_activa' => $cat_id,
-            'pageTitle'  => 'Productos | ' . SITE_NAME,
+            'pageTitle'  => 'Productos de Aromaterapia con Aceites Esenciales | ' . SITE_NAME,
+            'pageDesc'   => 'Mezclas de aromaterapia con aceites esenciales dōTERRA para el bienestar físico, emocional y mental. Envío a todo Chile.',
         ]);
     }
 

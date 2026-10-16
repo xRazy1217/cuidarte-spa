@@ -2,6 +2,7 @@
 require_once __DIR__ . '/Controller.php';
 require_once __DIR__ . '/../models/ProductoModel.php';
 require_once __DIR__ . '/../models/OtrosModels.php';
+require_once __DIR__ . '/../models/Mailer.php';
 
 class CarritoController extends Controller {
     public function index() {
@@ -181,24 +182,47 @@ class CarritoController extends Controller {
     private function enviarActivacion($email, $nombre, $token) {
         $link   = BASE_URL . '/activar-cuenta/' . $token;
         $asunto = 'Activa tu cuenta en ' . SITE_NAME;
-        $msg    = "Hola $nombre,\n\nGracias por tu compra. Hemos creado una cuenta para ti.\n"
-                . "Haz clic en el siguiente enlace para activarla y crear tu contraseña:\n\n$link\n\n"
-                . "Si no realizaste esta compra, ignora este mensaje.\n\n" . SITE_NAME;
-        @mail($email, $asunto, $msg, 'From: ' . config('email_contacto'));
+        $cuerpo = "<h2>Bienvenido a " . SITE_NAME . "</h2>";
+        $cuerpo .= "<p>Hola <strong>$nombre</strong>,</p>";
+        $cuerpo .= "<p>¡Gracias por tu compra! Hemos creado una cuenta para ti.</p>";
+        $cuerpo .= "<p>Haz clic en el siguiente enlace para activar tu cuenta y crear tu contraseña:</p>";
+        $cuerpo .= "<p><a href='$link' style='background:#4A90A4;color:white;padding:10px 20px;text-decoration:none;border-radius:5px;display:inline-block'>Activar mi cuenta</a></p>";
+        $cuerpo .= "<p>O copia este enlace: $link</p>";
+        $cuerpo .= "<p><small>Si no realizaste esta compra, ignora este mensaje.</small></p>";
+        $cuerpo .= "<p>Saludos,<br>" . SITE_NAME . "</p>";
+        
+        $mailer = new Mailer();
+        $mailer->enviar($email, $asunto, $cuerpo, true);
     }
 
     private function enviarComprobante($email, $nombre, $pedido_id, $carrito, $total, $descuento) {
         $num    = str_pad($pedido_id, 6, '0', STR_PAD_LEFT);
         $asunto = "Comprobante de pedido #$num | " . SITE_NAME;
-        $items  = '';
+        $cuerpo = "<h2>Comprobante de Pedido</h2>";
+        $cuerpo .= "<p>Hola <strong>$nombre</strong>,</p>";
+        $cuerpo .= "<p>Recibimos tu pedido <strong>#$num</strong>.</p>";
+        $cuerpo .= "<h3>Detalles del pedido:</h3>";
+        $cuerpo .= "<table style='width:100%;border-collapse:collapse'>";
+        $cuerpo .= "<tr style='background:#f5f5f5'><th style='padding:10px;text-align:left;border:1px solid #ddd'>Producto</th><th style='padding:10px;text-align:center;border:1px solid #ddd'>Cantidad</th><th style='padding:10px;text-align:right;border:1px solid #ddd'>Precio</th></tr>";
+        
         foreach ($carrito as $item) {
             $subtotalItem = $item['precio'] * $item['cantidad'];
-            $items .= "- {$item['producto_nombre']} ({$item['variante_nombre']}) x{$item['cantidad']}: $" . number_format($subtotalItem, 0, ',', '.') . "\n";
+            $cuerpo .= "<tr><td style='padding:10px;border:1px solid #ddd'>{$item['producto_nombre']} ({$item['variante_nombre']})</td>";
+            $cuerpo .= "<td style='padding:10px;text-align:center;border:1px solid #ddd'>{$item['cantidad']}</td>";
+            $cuerpo .= "<td style='padding:10px;text-align:right;border:1px solid #ddd'>$" . number_format($subtotalItem, 0, ',', '.') . "</td></tr>";
         }
-        if ($descuento > 0) $items .= "  Descuento: -$" . number_format($descuento, 0, ',', '.') . "\n";
-        $msg = "Hola $nombre,\n\nRecibimos tu pedido #$num.\n\n$items\nTOTAL: $" . number_format($total, 0, ',', '.') . "\n\n"
-             . "Nos contactaremos contigo para coordinar el pago y envío.\n\n" . SITE_NAME;
-        @mail($email, $asunto, $msg, 'From: ' . config('email_contacto'));
+        
+        if ($descuento > 0) {
+            $cuerpo .= "<tr style='background:#f0f0f0'><td colspan='2' style='padding:10px;border:1px solid #ddd;text-align:right'><strong>Descuento:</strong></td><td style='padding:10px;text-align:right;border:1px solid #ddd;color:green'>-$" . number_format($descuento, 0, ',', '.') . "</td></tr>";
+        }
+        
+        $cuerpo .= "<tr style='background:#4A90A4;color:white'><td colspan='2' style='padding:10px;border:1px solid #ddd;text-align:right'><strong>TOTAL:</strong></td><td style='padding:10px;text-align:right;border:1px solid #ddd'><strong>$" . number_format($total, 0, ',', '.') . "</strong></td></tr>";
+        $cuerpo .= "</table>";
+        $cuerpo .= "<p style='margin-top:20px'>Nos contactaremos contigo pronto para coordinar el pago y envío.</p>";
+        $cuerpo .= "<p>Saludos,<br>" . SITE_NAME . "</p>";
+        
+        $mailer = new Mailer();
+        $mailer->enviar($email, $asunto, $cuerpo, true);
     }
 
     public function datos() {

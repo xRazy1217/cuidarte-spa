@@ -1,79 +1,202 @@
-<?php
-$calendarUrl = '';
-if ($reserva && !empty($reserva['fecha']) && !empty($reserva['hora_inicio'])) {
-    $inicio = str_replace(['-', ':', ' '], '', $reserva['fecha'] . 'T' . $reserva['hora_inicio']);
-    $fin    = str_replace(['-', ':', ' '], '', $reserva['fecha'] . 'T' . $reserva['hora_fin']);
-    $titulo = urlencode(($reserva['servicio_nombre'] ?? 'Sesión') . ' - ' . SITE_NAME);
-    $detalle = urlencode('Reserva #' . str_pad($reserva['id'], 6, '0', STR_PAD_LEFT) . ' | Modalidad: ' . ucfirst($reserva['modalidad'] ?? ''));
-    $calendarUrl = "https://calendar.google.com/calendar/render?action=TEMPLATE&text={$titulo}&dates={$inicio}/{$fin}&details={$detalle}";
-}
-?>
+<div class="confirmacion-container">
+    <div class="confirmacion-card">
+        <div class="confirmacion-icon">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                <circle cx="40" cy="40" r="38" stroke="#4A90A4" stroke-width="2"/>
+                <path d="M30 40L36 46L50 32" stroke="#4A90A4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+        </div>
 
-<section class="wc-section wc-bg-watercolor">
-<div class="container" style="max-width:700px">
+        <h1>Tu reserva está en espera de confirmación</h1>
+        
+        <div class="info-box">
+            <p>Hola <strong><?= htmlspecialchars($reserva['nombre_cliente']) ?></strong>,</p>
+            <p>Hemos recibido tu solicitud de reserva. Nos contactaremos pronto para confirmar la disponibilidad y los detalles de tu sesión.</p>
+        </div>
 
-    <div style="text-align:center;margin-bottom:2rem">
-        <div style="width:90px;height:90px;background:linear-gradient(135deg,var(--wc-blue),var(--wc-pink));border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;color:white;font-size:2.5rem;box-shadow:0 8px 25px rgba(74,144,217,0.3)">✓</div>
-        <h1 style="color:var(--wc-blue-dark);margin-bottom:0.5rem">¡Pago Exitoso!</h1>
-        <p style="color:var(--wc-text-soft);font-size:1.05rem">Tu reserva ha sido confirmada. Te enviamos los detalles por correo.</p>
-    </div>
-
-    <?php if ($reserva): ?>
-    <div class="wc-card mb-3">
-        <div class="wc-card-body">
-            <h4 style="color:var(--wc-blue-dark);margin-bottom:1.25rem">📋 Detalles de tu reserva</h4>
-            <div style="display:grid;gap:0.75rem;font-size:0.95rem">
-                <div style="display:flex;justify-content:space-between;padding-bottom:0.75rem;border-bottom:1px solid rgba(180,160,140,0.15)">
-                    <span style="color:var(--wc-text-soft)">N° Reserva</span>
-                    <strong style="color:var(--wc-blue)">#<?= str_pad($reserva['id'], 6, '0', STR_PAD_LEFT) ?></strong>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding-bottom:0.75rem;border-bottom:1px solid rgba(180,160,140,0.15)">
-                    <span style="color:var(--wc-text-soft)">Servicio</span>
-                    <strong><?= htmlspecialchars($reserva['servicio_nombre'] ?? '-') ?></strong>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding-bottom:0.75rem;border-bottom:1px solid rgba(180,160,140,0.15)">
-                    <span style="color:var(--wc-text-soft)">Fecha</span>
-                    <strong><?= !empty($reserva['fecha']) ? date('d/m/Y', strtotime($reserva['fecha'])) : '-' ?></strong>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding-bottom:0.75rem;border-bottom:1px solid rgba(180,160,140,0.15)">
-                    <span style="color:var(--wc-text-soft)">Horario</span>
-                    <strong><?= !empty($reserva['hora_inicio']) ? substr($reserva['hora_inicio'], 0, 5) . ' - ' . substr($reserva['hora_fin'], 0, 5) : '-' ?></strong>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding-bottom:0.75rem;border-bottom:1px solid rgba(180,160,140,0.15)">
-                    <span style="color:var(--wc-text-soft)">Modalidad</span>
-                    <strong><?= ucfirst($reserva['modalidad'] ?? '-') ?></strong>
-                </div>
-                <div style="display:flex;justify-content:space-between;padding-bottom:0.75rem;border-bottom:1px solid rgba(180,160,140,0.15)">
-                    <span style="color:var(--wc-text-soft)">Cliente</span>
-                    <strong><?= htmlspecialchars($reserva['nombre_cliente'] ?? '-') ?></strong>
-                </div>
-                <div style="display:flex;justify-content:space-between">
-                    <span style="color:var(--wc-text-soft)">Monto pagado</span>
-                    <strong style="color:#1a1a1a;font-size:1.1rem">$<?= number_format($reserva['monto'] ?? 0, 0, ',', '.') ?></strong>
-                </div>
+        <div class="detalles">
+            <h3>Detalles de tu reserva</h3>
+            <div class="detalle-item">
+                <span class="label">Servicio:</span>
+                <span class="valor"><?= htmlspecialchars($reserva['servicio_nombre']) ?></span>
+            </div>
+            <div class="detalle-item">
+                <span class="label">Duración:</span>
+                <span class="valor"><?= $reserva['duracion_minutos'] ?> minutos</span>
+            </div>
+            <div class="detalle-item">
+                <span class="label">Modalidad:</span>
+                <span class="valor"><?= ucfirst($reserva['modalidad']) ?></span>
+            </div>
+            <div class="detalle-item">
+                <span class="label">Monto:</span>
+                <span class="valor">$<?= number_format($reserva['monto'], 0, ',', '.') ?></span>
+            </div>
+            <div class="detalle-item">
+                <span class="label">Estado:</span>
+                <span class="valor badge">En espera de confirmación</span>
             </div>
         </div>
-    </div>
 
-    <?php if ($calendarUrl): ?>
-    <div class="wc-card mb-3" style="border:1px solid rgba(74,144,217,0.2);background:var(--wc-blue-pale)">
-        <div class="wc-card-body" style="text-align:center">
-            <div style="font-size:2rem;margin-bottom:0.5rem">📅</div>
-            <h5 style="color:var(--wc-blue-dark);margin-bottom:0.5rem">¿Quieres recordarlo?</h5>
-            <p style="color:var(--wc-text-soft);font-size:0.9rem;margin-bottom:1rem">Agrega tu sesión a Google Calendar y recibe un recordatorio automático.</p>
-            <a href="<?= $calendarUrl ?>" target="_blank" class="btn-wc-primary" style="display:inline-flex;align-items:center;gap:0.5rem">
-                📅 Agendar en Google Calendar
-            </a>
+        <div class="info-box info-email">
+            <p>📧 Te enviaremos un email a <strong><?= htmlspecialchars($reserva['email_cliente']) ?></strong> cuando confirmemos tu reserva.</p>
+        </div>
+
+        <div class="acciones">
+            <a href="<?= BASE_URL ?>/" class="btn btn-primary">Volver al inicio</a>
+            <a href="<?= BASE_URL ?>/servicios" class="btn btn-secondary">Ver más servicios</a>
         </div>
     </div>
-    <?php endif; ?>
-
-    <?php endif; ?>
-
-    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-        <a href="<?= BASE_URL ?>/" class="btn-wc-primary">Volver al Inicio</a>
-        <a href="<?= BASE_URL ?>/servicios" class="btn-wc-outline">Ver Servicios</a>
-    </div>
-
 </div>
-</section>
+
+<style>
+.confirmacion-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #E8F4F8 0%, #B8D4E3 100%);
+}
+
+.confirmacion-card {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.confirmacion-icon {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.confirmacion-card h1 {
+    color: #2C5F6F;
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-family: 'Playfair Display', serif;
+}
+
+.info-box {
+    background: #F0F8FB;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    text-align: left;
+    border-left: 4px solid #4A90A4;
+}
+
+.info-box p {
+    margin: 10px 0;
+    color: #333;
+    line-height: 1.6;
+}
+
+.detalles {
+    background: #F9F9F9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.detalles h3 {
+    color: #2C5F6F;
+    font-size: 16px;
+    margin-bottom: 15px;
+    font-family: 'Playfair Display', serif;
+}
+
+.detalle-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.detalle-item:last-child {
+    border-bottom: none;
+}
+
+.detalle-item .label {
+    font-weight: 600;
+    color: #666;
+}
+
+.detalle-item .valor {
+    color: #333;
+}
+
+.badge {
+    display: inline-block;
+    background: #fff3cd;
+    color: #856404;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.info-email {
+    background: #E8F4F8;
+    border-left-color: #7FB3D5;
+}
+
+.acciones {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.btn {
+    flex: 1;
+    display: inline-block;
+    padding: 12px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background: #4A90A4;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2C5F6F;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #E8F4F8;
+    color: #4A90A4;
+    border: 2px solid #4A90A4;
+}
+
+.btn-secondary:hover {
+    background: #D0E8F0;
+}
+
+@media (max-width: 600px) {
+    .confirmacion-card {
+        padding: 25px;
+    }
+
+    .confirmacion-card h1 {
+        font-size: 20px;
+    }
+
+    .acciones {
+        flex-direction: column;
+    }
+}
+</style>

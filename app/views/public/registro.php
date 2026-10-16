@@ -14,6 +14,7 @@
 
         <div style="background: white; padding: 2.5rem; border-radius: 15px; box-shadow: 0 5px 20px var(--shadow);">
             <form method="POST" action="<?= BASE_URL ?>/registro">
+                <input type="hidden" name="csrf_token" value="<?= csrfToken() ?>">
                 <div class="form-group">
                     <label class="form-label">Nombre completo</label>
                     <input type="text" name="nombre" class="form-control" required
