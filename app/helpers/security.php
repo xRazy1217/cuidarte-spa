@@ -24,6 +24,13 @@ function csrfCheck() {
     return false;
 }
 
+/** URL de un asset con ?v=<mtime> para que los navegadores no sirvan una versión vieja en caché. */
+function assetUrl($rutaRelativa) {
+    $archivo = __DIR__ . '/../../' . ltrim($rutaRelativa, '/');
+    $v = is_file($archivo) ? filemtime($archivo) : 0;
+    return BASE_URL . '/' . ltrim($rutaRelativa, '/') . ($v ? '?v=' . $v : '');
+}
+
 function clientIp() {
     return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0'; // en SiteGround REMOTE_ADDR es la IP real del cliente
 }
