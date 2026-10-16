@@ -13,6 +13,7 @@ class CarritoController extends Controller {
     }
 
     public function agregar() {
+        csrfCheck();
         $variante_id = (int)($_POST['variante_id'] ?? 0);
         $cantidad    = max(1, (int)($_POST['cantidad'] ?? 1));
 
@@ -49,12 +50,14 @@ class CarritoController extends Controller {
     }
 
     public function eliminar() {
+        csrfCheck();
         $key = 'v_' . (int)($_POST['variante_id'] ?? 0);
         unset($_SESSION['carrito'][$key]);
         $this->json(['success' => true]);
     }
 
     public function actualizar() {
+        csrfCheck();
         $key = 'v_' . (int)($_POST['variante_id'] ?? 0);
         $cantidad = max(1, (int)($_POST['cantidad'] ?? 1));
         if (isset($_SESSION['carrito'][$key])) {

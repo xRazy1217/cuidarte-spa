@@ -11,6 +11,7 @@
 
         <div class="p-4" style="background:white;border-radius:20px;box-shadow:0 8px 30px rgba(74,144,217,0.12)">
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?= csrfToken() ?>">
                 <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
                 <div class="mb-4">
                     <label class="wc-form-label">Nueva contraseña *</label>

@@ -21,6 +21,7 @@
         <?php endif; ?>
 
         <form method="POST">
+            <input type="hidden" name="csrf_token" value="<?= csrfToken() ?>">
             <div class="mb-3">
                 <label class="wc-form-label">Nueva contraseña *</label>
                 <input type="password" name="password" class="wc-form-control" minlength="6" required autofocus>

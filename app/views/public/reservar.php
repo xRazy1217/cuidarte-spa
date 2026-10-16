@@ -47,6 +47,7 @@
         <p class="modal-subtitle">Completa el formulario para solicitar tu sesión</p>
 
         <form method="POST" action="<?= BASE_URL ?>/reservar" id="formReserva">
+            <input type="hidden" name="csrf_token" value="<?= csrfToken() ?>">
             <input type="hidden" name="servicio_id" id="servicio_id" value="">
 
             <div class="form-group">
