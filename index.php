@@ -1,6 +1,23 @@
 <?php
+// Configurar sesiones ANTES de session_start()
+ini_set('session.cookie_httponly', 1);
+ini_set('session.cookie_samesite', 'Lax');
+ini_set('session.use_strict_mode', 1);
+
 require_once __DIR__ . '/config/database.php';
+
+if (ENVIRONMENT === 'production') {
+    ini_set('session.cookie_secure', 1);
+} else {
+    ini_set('session.cookie_secure', 0);
+}
+
 session_start();
+// Generar token CSRF solo si no existe
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 
 // URL secreta para acceso admin (cambiar en producción)
 define('ADMIN_SECRET_URL', 'gestion-privada');
@@ -43,7 +60,8 @@ if ($controller === 'admin') {
         $class = ucfirst($adminCtrl) . 'AdminController';
         if (!class_exists($class)) $class = ucfirst($adminCtrl) . 'Controller';
         $obj = new $class();
-        if (method_exists($obj, $adminAction)) $obj->$adminAction($adminParam);
+        $adminActionCamel = lcfirst(str_replace(' ', '', ucwords(str_replace('-', ' ', $adminAction))));
+        if (method_exists($obj, $adminActionCamel)) $obj->$adminActionCamel($adminParam);
         else $obj->index();
     } else {
         require_once __DIR__ . '/app/controllers/admin/DashboardController.php';
@@ -105,6 +123,18 @@ if ($controller === 'pago') {
     exit;
 }
 
+if ($controller === 'servicios' && $action === 'consulta-fono') {
+    require_once __DIR__ . '/app/controllers/ServiciosController.php';
+    (new ServiciosController())->consultaFono();
+    exit;
+}
+
+if ($controller === 'reservar' && $action === 'confirmacion') {
+    require_once __DIR__ . '/app/controllers/ReservasController.php';
+    (new ReservasController())->confirmacion($param);
+    exit;
+}
+
 // Controladores cuyo segundo segmento es siempre un slug
 $slugRoutes = ['producto', 'articulo'];
 
@@ -114,9 +144,8 @@ $actionCamel = lcfirst(str_replace(' ', '', ucwords(str_replace('-', ' ', $actio
 $route = $map[$controller] ?? null;
 
 if (!$route) {
-    http_response_code(404);
     require_once __DIR__ . '/app/controllers/HomeController.php';
-    (new HomeController())->render('404', ['pageTitle' => 'Página no encontrada | ' . SITE_NAME]);
+    (new HomeController())->notFound();
     exit;
 }
 
@@ -133,7 +162,6 @@ if (file_exists($ctrlFile)) {
         $obj->{$route[1]}($param);
     }
 } else {
-    http_response_code(404);
     require_once __DIR__ . '/app/controllers/HomeController.php';
-    (new HomeController())->render('404', ['pageTitle' => 'Página no encontrada | ' . SITE_NAME]);
+    (new HomeController())->notFound();
 }

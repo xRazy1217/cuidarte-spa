@@ -135,9 +135,8 @@
             <img src="<?= BASE_URL ?>/public/images/banner/<?= htmlspecialchars($img) ?>"
                  style="width:100%;height:120px;object-fit:cover;border-radius:10px;margin-bottom:0.75rem;background:#eee">
             <form method="POST" action="<?= BASE_URL ?>/admin/textos/subir-imagen" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="<?= csrfToken() ?>">
                 <input type="hidden" name="clave" value="<?= $clave ?>">
-                <input type="file" name="imagen" accept="image/*" class="form-control" style="margin-bottom:0.5rem" required>
+                <input type="file" name="imagen" accept="image/jpeg,image/png,image/webp" class="form-control" style="margin-bottom:0.5rem" required>
                 <button type="submit" class="btn btn-primary btn-sm" style="width:100%;justify-content:center">Cambiar imagen</button>
             </form>
         </div>

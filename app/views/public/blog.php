@@ -2,7 +2,7 @@
 <section class="wc-page-banner">
     <img src="<?= BASE_URL ?>/public/images/banner/Nosotros.png" alt="Blog">
     <div class="wc-page-banner-content">
-        <h1>Blog de Bienestar ✍️</h1>
+        <h1>Blog de Bienestar</h1>
         <p>Consejos y conocimiento sobre aromaterapia y crianza consciente</p>
     </div>
 </section>
@@ -11,7 +11,7 @@
     <div class="container">
         <?php if (empty($articulos)): ?>
         <div class="text-center py-5" style="color:var(--wc-text-soft)">
-            <div style="font-size:4rem;margin-bottom:1rem">✍️</div>
+            <div style="font-size:4rem;margin-bottom:1rem"></div>
             <h3>Próximamente nuevos artículos</h3>
             <p>Estamos preparando contenido valioso para ti</p>
         </div>

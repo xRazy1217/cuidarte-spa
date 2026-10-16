@@ -15,6 +15,7 @@
         <?php if (empty($ok)): ?>
         <div class="p-4" style="background:white;border-radius:20px;box-shadow:0 8px 30px rgba(74,144,217,0.12)">
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?= csrfToken() ?>">
                 <div class="mb-4">
                     <label class="wc-form-label">Email de tu cuenta *</label>
                     <input type="email" name="email" class="wc-form-control" required placeholder="tu@email.com" autofocus>

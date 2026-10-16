@@ -4,7 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle ?? SITE_NAME) ?></title>
-    <meta name="description" content="<?= htmlspecialchars($pageDesc ?? '') ?>">
+    <meta name="description" content="<?= htmlspecialchars($pageDesc ?? 'CuidArte La Serena — Terapia RAI, Aromaterapia y acompañamiento en crianza consciente para madres, padres y cuidadores.') ?>">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://cuidartelaserena.cl<?= strtok($_SERVER['REQUEST_URI'] ?? '/', '?') ?>">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Cuidarte La Serena">
+    <meta property="og:title" content="<?= htmlspecialchars($pageTitle ?? SITE_NAME) ?>">
+    <meta property="og:description" content="<?= htmlspecialchars($pageDesc ?? 'CuidArte La Serena — Terapia RAI, Aromaterapia y acompañamiento en crianza consciente para madres, padres y cuidadores.') ?>">
+    <meta property="og:url" content="https://cuidartelaserena.cl<?= strtok($_SERVER['REQUEST_URI'] ?? '/', '?') ?>">
+    <meta property="og:image" content="https://cuidartelaserena.cl/public/images/logo_Cuidarte.jpeg">
+    <meta property="og:locale" content="es_CL">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?= htmlspecialchars($pageTitle ?? SITE_NAME) ?>">
+    <meta name="twitter:description" content="<?= htmlspecialchars($pageDesc ?? 'CuidArte La Serena — Terapia RAI, Aromaterapia y acompañamiento en crianza consciente.') ?>">
+    <meta name="twitter:image" content="https://cuidartelaserena.cl/public/images/logo_Cuidarte.jpeg">
+
+    <!-- Schema.org Negocio Local -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "HealthAndBeautyBusiness",
+        "name": "Cuidarte La Serena",
+        "description": "Espacio de acompañamiento terapéutico en crianza consciente, Terapia RAI y Aromaterapia para madres, padres y cuidadores.",
+        "url": "https://cuidartelaserena.cl",
+        "logo": "https://cuidartelaserena.cl/public/images/logo_Cuidarte.jpeg",
+        "image": "https://cuidartelaserena.cl/public/images/logo_Cuidarte.jpeg",
+        "telephone": "+56 9 XXXX XXXX",
+        "email": "contacto@cuidartespa.cl",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "La Serena",
+            "addressRegion": "Coquimbo",
+            "addressCountry": "CL"
+        },
+        "sameAs": [
+            "https://www.instagram.com/cuidartelaserena"
+        ],
+        "priceRange": "$$",
+        "openingHours": "Mo-Fr 09:00-18:00",
+        "servesCuisine": null,
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Servicios terapéuticos",
+            "itemListElement": [
+                {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Terapia RAI"}},
+                {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Aromaterapia"}},
+                {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Guía en Crianza Waldorf"}},
+                {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Círculos de Autocuidado"}}
+            ]
+        }
+    }
+    </script>
+
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Fonts -->
@@ -21,20 +76,17 @@
         <!-- LOGO -->
         <a class="wc-brand" href="<?= BASE_URL ?>/">
             <div class="wc-logo-wrap">
-                <span class="wc-logo-icon">🌿</span>
-                <div>
-                    <span class="wc-logo-text">Cuidarte</span>
-                    <span class="wc-logo-sub">Spa & Aromaterapia</span>
-                </div>
+                <img src="<?= BASE_URL ?>/public/images/logo_Cuidarte.jpeg" alt="Cuidarte La Serena" style="height:50px;width:auto;object-fit:contain;border-radius:8px">
+                <span style="font-size:0.72rem;color:var(--wc-text-soft);font-style:italic;display:block;margin-top:2px">El arte de cuidar a quien cuida</span>
             </div>
         </a>
 
         <!-- LINKS CENTRO -->
         <ul class="wc-nav-links" id="navMenu">
             <li><a class="wc-nav-link" href="<?= BASE_URL ?>/">Inicio</a></li>
-            <li><a class="wc-nav-link" href="<?= BASE_URL ?>/nosotros">Propósito</a></li>
-            <li><a class="wc-nav-link" href="<?= BASE_URL ?>/productos">Productos</a></li>
+            <li><a class="wc-nav-link" href="<?= BASE_URL ?>/nosotros">Sobre CuidArte</a></li>
             <li><a class="wc-nav-link" href="<?= BASE_URL ?>/servicios">Servicios</a></li>
+            <li><a class="wc-nav-link" href="<?= BASE_URL ?>/productos">Productos</a></li>
             <li><a class="wc-nav-link" href="<?= BASE_URL ?>/blog">Blog</a></li>
             <li><a class="wc-nav-link" href="<?= BASE_URL ?>/contacto">Contacto</a></li>
         </ul>
@@ -74,37 +126,61 @@
 
 <!-- FOOTER -->
 <footer class="wc-footer mt-3">
-    <img src="<?= BASE_URL ?>/public/images/banner/footer.png" alt="Footer" class="wc-footer-bg">
-    <div class="wc-footer-content container">
-        <div class="row g-4 pb-4">
-            <div class="col-md-4">
-                <div class="wc-footer-brand">
-                    <span style="font-size:1.8rem;font-weight:800;color:white">Cuidarte Spa 🦋</span>
-                    <p class="mt-2" style="opacity:0.8">Bienestar físico, emocional y mental a través de la aromaterapia y el acompañamiento consciente.</p>
+    <img src="<?= BASE_URL ?>/public/images/banner/footer3.png" alt="" class="wc-footer-bg">
+    <div class="container">
+        <div class="wc-footer-container">
+
+            <!-- Logo + contacto -->
+            <div class="wc-footer-box">
+                <img src="<?= BASE_URL ?>/public/images/logo_Cuidarte.jpeg" alt="Cuidarte La Serena" class="wc-footer-logo-img">
+                <div class="wc-footer-slogan">El arte de cuidar a quien cuida</div>
+                <div class="wc-footer-contact-item">
+                    <i>Tel</i>
+                    <span><?= config('telefono') ?: '+56 9 XXXX XXXX' ?></span>
+                </div>
+                <div class="wc-footer-contact-item">
+                    <i>@</i>
+                    <span>contacto@cuidartelaserena.cl</span>
                 </div>
             </div>
-            <div class="col-md-4">
-                <h5 class="wc-footer-title">Navegación</h5>
-                <ul class="list-unstyled wc-footer-links">
-                    <li><a href="<?= BASE_URL ?>/productos">🌿 Productos</a></li>
-                    <li><a href="<?= BASE_URL ?>/servicios">💆 Servicios</a></li>
-                    <li><a href="<?= BASE_URL ?>/reservar">📅 Reservar</a></li>
-                    <li><a href="<?= BASE_URL ?>/blog">✍️ Blog</a></li>
-                    <li><a href="<?= BASE_URL ?>/nosotros">🌸 Propósito</a></li>
-                </ul>
+
+            <!-- Navegacion -->
+            <div class="wc-footer-box">
+                <h3>Navegaci&oacute;n</h3>
+                <a href="<?= BASE_URL ?>/">Inicio</a>
+                <a href="<?= BASE_URL ?>/productos">Productos</a>
+                <a href="<?= BASE_URL ?>/servicios">Servicios</a>
+                <a href="<?= BASE_URL ?>/blog">Blog</a>
+                <a href="<?= BASE_URL ?>/nosotros">Sobre CuidArte</a>
             </div>
-            <div class="col-md-4">
-                <h5 class="wc-footer-title">Contacto</h5>
-                <p style="opacity:0.8">📱 <?= config('telefono') ?: '+56 9 XXXX XXXX' ?></p>
-                <p style="opacity:0.8">📧 <?= config('email_contacto') ?: 'contacto@cuidartespa.cl' ?></p>
-                <div class="d-flex gap-2 mt-3">
-                    <a href="#" class="wc-social-btn">Instagram</a>
-                    <a href="#" class="wc-social-btn">Facebook</a>
-                </div>
+
+            <!-- Servicios -->
+            <div class="wc-footer-box">
+                <h3>Servicios</h3>
+                <a href="<?= BASE_URL ?>/reservar">Reservar Sesi&oacute;n</a>
+                <a href="<?= BASE_URL ?>/servicios">Gu&iacute;a en Crianza</a>
+                <a href="<?= BASE_URL ?>/servicios">Terapia RAI</a>
+                <a href="<?= BASE_URL ?>/servicios">Aromaterapia</a>
+                <a href="<?= BASE_URL ?>/servicios">Talleres</a>
             </div>
+
+            <!-- Contacto -->
+            <div class="wc-footer-box">
+                <h3>Cont&aacute;ctanos</h3>
+                <a href="<?= BASE_URL ?>/contacto">Formulario de contacto</a>
+                <a href="<?= config('instagram_url') ?: '#' ?>">Instagram</a>
+                <a href="#">Facebook</a>
+                <a href="<?= BASE_URL ?>/reservar">Agendar hora</a>
+            </div>
+
         </div>
-        <div class="wc-footer-bottom text-center py-3">
-            <p class="mb-0" style="opacity:0.75">&copy; <?= date('Y') ?> Cuidarte Spa &mdash; Hecho con 💙 y aromaterapia</p>
+
+        <div class="wc-footer-bottom">
+            <p>&copy; <?= date('Y') ?> Cuidarte La Serena &mdash; Todos los derechos reservados</p>
+            <div class="wc-footer-socials">
+                <a href="<?= config('instagram_url') ?: '#' ?>">Instagram</a>
+                <a href="#">Facebook</a>
+            </div>
         </div>
     </div>
 </footer>
@@ -114,7 +190,7 @@
 <!-- DRAWER CARRITO -->
 <div id="cartDrawerOverlay" onclick="closeCartDrawer()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1040"></div>
 <div id="cartDrawer" style="position:fixed;top:0;right:0;width:380px;max-width:95vw;height:100vh;background:white;z-index:1050;transform:translateX(100%);transition:transform 0.35s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-8px 0 40px rgba(0,0,0,0.15)">
-    <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--wc-blue-soft);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,#4A90A4,#2C7A6F)">
+    <div style="padding:1.25rem 1.5rem;border-bottom:1px solid var(--wc-blue-soft);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,#B09AB5,#6B4F6E)">
         <span style="font-weight:700;font-size:1.1rem;color:white">🛒 Tu Carrito</span>
         <button onclick="closeCartDrawer()" style="background:rgba(255,255,255,0.2);border:none;color:white;width:32px;height:32px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center">&times;</button>
     </div>
@@ -206,17 +282,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>const BASE_URL = '<?= BASE_URL ?>';</script>
 <script src="<?= BASE_URL ?>/public/js/main.js"></script>
-<script>
-// Inyectar CSRF en formularios públicos
-document.querySelectorAll('form[method="post"], form[method="POST"]').forEach(f => {
-    if (!f.querySelector('[name="csrf_token"]')) {
-        const i = document.createElement('input');
-        i.type = 'hidden'; i.name = 'csrf_token';
-        i.value = '<?= csrfToken() ?>';
-        f.appendChild(i);
-    }
-});
-</script>
+
 <script>
 function abrirReserva(servicioId) {
     const sel = document.getElementById('servicioId');
@@ -313,3 +379,7 @@ document.getElementById('modalReserva').addEventListener('hidden.bs.modal', () =
 </script>
 </body>
 </html>
+
+
+
+

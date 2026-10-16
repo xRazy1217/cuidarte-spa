@@ -31,21 +31,27 @@ class TextosController extends AdminController {
     }
 
     public function subirImagen() {
-        if (!$this->isPost()) $this->redirect('/admin/textos');
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') $this->redirect('/admin/textos');
+        if (!isset($_SESSION['usuario']) || $_SESSION['usuario']['rol'] !== 'admin') $this->redirect('/login');
 
         $clave = preg_replace('/[^a-z0-9_]/', '', $_POST['clave'] ?? '');
-        if (!$clave || empty($_FILES['imagen']['tmp_name'])) $this->redirect('/admin/textos?error=1');
+        $file  = $_FILES['imagen'] ?? null;
 
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime  = finfo_file($finfo, $_FILES['imagen']['tmp_name']);
-        finfo_close($finfo);
+        if (!$clave || !$file || $file['error'] !== UPLOAD_ERR_OK) {
+            $this->redirect('/admin/textos?error=archivo');
+        }
 
-        $permitidos = ['image/jpeg', 'image/png', 'image/webp'];
-        if (!in_array($mime, $permitidos)) $this->redirect('/admin/textos?error=tipo');
+        $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp'])) {
+            $this->redirect('/admin/textos?error=tipo');
+        }
 
-        $ext  = ['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp'][$mime];
-        $nombre = bin2hex(random_bytes(8)) . '.' . $ext;
-        move_uploaded_file($_FILES['imagen']['tmp_name'], __DIR__ . '/../../..' . '/public/images/banner/' . $nombre);
+        $nombre  = bin2hex(random_bytes(8)) . '.' . $ext;
+        $destino = realpath(__DIR__ . '/../../../public/images/banner') . DIRECTORY_SEPARATOR . $nombre;
+
+        if (!move_uploaded_file($file['tmp_name'], $destino)) {
+            $this->redirect('/admin/textos?error=mover');
+        }
 
         getDB()->prepare("UPDATE configuracion SET valor=? WHERE clave=?")->execute([$nombre, $clave]);
         $this->redirect('/admin/textos?ok=1');

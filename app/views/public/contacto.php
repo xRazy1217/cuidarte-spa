@@ -21,6 +21,7 @@
                 <?php endif; ?>
 
                 <form method="POST" action="<?= BASE_URL ?>/contacto">
+                    <input type="hidden" name="csrf_token" value="<?= csrfToken() ?>">
                     <div class="mb-3">
                         <label class="wc-form-label">Nombre *</label>
                         <input type="text" name="nombre" class="wc-form-control" required placeholder="Tu nombre">

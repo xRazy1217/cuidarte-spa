@@ -1,6 +1,6 @@
 <?php
 $estados = ['pendiente'=>'badge-warning','pagado'=>'badge-success','enviado'=>'badge-info','cancelado'=>'badge-danger'];
-$estadosR = ['pendiente'=>'badge-warning','confirmada'=>'badge-success','cancelada'=>'badge-danger'];
+$estadosR = ['pendiente_confirmacion'=>'badge-warning','confirmada'=>'badge-success','rechazada'=>'badge-danger','cancelada'=>'badge-danger'];
 ?>
 
 <div class="page-header">
@@ -78,7 +78,7 @@ $estadosR = ['pendiente'=>'badge-warning','confirmada'=>'badge-success','cancela
                 <tr>
                     <td>#<?= $r['id'] ?></td>
                     <td><?= htmlspecialchars($r['nombre_cliente'] ?? '-') ?></td>
-                    <td><?= date('d/m/Y', strtotime($r['fecha'])) ?></td>
+                    <td><?= isset($r['created_at']) ? date('d/m/Y', strtotime($r['created_at'])) : '-' ?></td>
                     <td><span class="badge <?= $estadosR[$r['estado']] ?? 'badge-secondary' ?>"><?= $r['estado'] ?></span></td>
                 </tr>
                 <?php endforeach; else: ?>

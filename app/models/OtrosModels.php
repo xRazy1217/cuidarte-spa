@@ -42,35 +42,56 @@ class PedidoModel extends Model {
 class ReservaModel extends Model {
     protected $table = 'reservas';
 
-    public function getHorarios($servicio_id, $fecha) {
+    public function getConServicio($id) {
         $st = $this->db->prepare(
-            "SELECT * FROM horarios_disponibles
-             WHERE servicio_id=? AND fecha=? AND disponible=1
-             AND cupos_ocupados < cupo_maximo
-             ORDER BY hora_inicio"
+            "SELECT r.*, s.nombre as servicio_nombre, s.duracion_minutos, s.precio
+             FROM reservas r
+             JOIN servicios s ON r.servicio_id = s.id
+             WHERE r.id = ? LIMIT 1"
         );
-        $st->execute([$servicio_id, $fecha]);
+        $st->execute([$id]);
+        return $st->fetch();
+    }
+
+    public function getPorEstado($estado, $limit = 50, $offset = 0) {
+        $st = $this->db->prepare(
+            "SELECT r.*, s.nombre as servicio_nombre
+             FROM reservas r
+             JOIN servicios s ON r.servicio_id = s.id
+             WHERE r.estado = ?
+             ORDER BY r.created_at DESC
+             LIMIT ? OFFSET ?"
+        );
+        $st->execute([$estado, $limit, $offset]);
         return $st->fetchAll();
     }
 
-    public function bloquearHorario($horario_id) {
-        // Increment occupied slots; mark unavailable only when full
-        $this->db->prepare(
-            "UPDATE horarios_disponibles
-             SET cupos_ocupados = cupos_ocupados + 1,
-                 disponible = IF(cupos_ocupados + 1 >= cupo_maximo, 0, 1)
-             WHERE id=?"
-        )->execute([$horario_id]);
+    public function getTodas($limit = 50, $offset = 0) {
+        $st = $this->db->prepare(
+            "SELECT r.*, s.nombre as servicio_nombre
+             FROM reservas r
+             JOIN servicios s ON r.servicio_id = s.id
+             ORDER BY r.created_at DESC
+             LIMIT ? OFFSET ?"
+        );
+        $st->execute([$limit, $offset]);
+        return $st->fetchAll();
     }
 
     public function getRecientes($limit = 10) {
         return $this->db->query(
-            "SELECT r.*, s.nombre as servicio_nombre, h.fecha, h.hora_inicio
+            "SELECT r.*, s.nombre as servicio_nombre
              FROM reservas r
              JOIN servicios s ON r.servicio_id=s.id
-             JOIN horarios_disponibles h ON r.horario_id=h.id
              ORDER BY r.created_at DESC LIMIT $limit"
         )->fetchAll();
+    }
+
+    public function actualizarEstado($id, $estado, $notas_admin = null, $fecha_sugerida = null) {
+        $st = $this->db->prepare(
+            "UPDATE reservas SET estado = ?, notas_admin = ?, fecha_sugerida = ? WHERE id = ?"
+        );
+        return $st->execute([$estado, $notas_admin, $fecha_sugerida, $id]);
     }
 }
 

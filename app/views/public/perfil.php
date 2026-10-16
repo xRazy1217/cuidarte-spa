@@ -15,6 +15,7 @@
         <div class="wc-card">
             <div class="wc-card-body p-4">
                 <form method="POST">
+                    <input type="hidden" name="csrf_token" value="<?= csrfToken() ?>">
                     <div class="mb-3">
                         <label class="wc-form-label">Nombre completo</label>
                         <input type="text" name="nombre" class="wc-form-control" value="<?= htmlspecialchars($user['nombre']) ?>" required>
