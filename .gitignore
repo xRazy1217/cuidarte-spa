@@ -1,5 +1,6 @@
 config/database.php
-public/uploads/
+public/uploads/*
+!public/uploads/.htaccess
 cuidarte_spa.sql
 .amazonq/
 sftp.json

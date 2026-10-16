@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../models/OtrosModels.php';
+require_once __DIR__ . '/../helpers/security.php';
 
 class Controller {
     protected function render($view, $data = [], $layout = 'public') {
@@ -51,7 +52,7 @@ class Controller {
 
     protected function isPost() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') return false;
-        csrfVerify();
+        csrfCheck();
         return true;
     }
 

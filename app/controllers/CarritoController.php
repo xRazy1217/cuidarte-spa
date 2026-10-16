@@ -240,7 +240,7 @@ class CarritoController extends Controller {
 
     public function validarCupon() {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') $this->json(['error' => 'Método no permitido'], 405);
-        csrfVerify();
+        csrfCheck();
         $codigo   = $this->sanitize($_POST['codigo'] ?? '');
         $subtotal = (float)($_POST['subtotal'] ?? 0);
         $cupon    = (new CuponModel())->validar($codigo);
