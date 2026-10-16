@@ -27,8 +27,15 @@ Producción: https://cuidartelaserena.cl (SiteGround). Repo: github.com/xRazy121
   `database.example.php` está incompleto (sin `getDB()` ni config de sesión): copiar de producción, nunca commitear.
 - SiteGround (nginx) sirve estáticos existentes **sin pasar por `.htaccess`**: nunca dejar zips, dumps, logs
   ni backups dentro de `public_html`. Backups en `~/backups/` (fuera de `www/`).
-- `config/database.php` en producción tiene `display_errors=1` incluso con `ENVIRONMENT==='production'`
-  (el comentario dice lo contrario). Pendiente de corregir.
+- Errores PHP en producción: `display_errors=0` y log en `~/www/cuidartelaserena.cl/logs/php_errors.log`
+  (fuera del webroot). Ese `config/database.php` no está en git: se editó a mano (backup en `~/backups/`).
+- En el servidor `CLAUDE.md` y `tools/` están excluidos con `git sparse-checkout` (nginx sirve estáticos
+  aunque `.htaccess` los bloquee). No ejecutar `git sparse-checkout disable` en producción.
+- El proxy de SiteGround cachea respuestas (`X-Proxy-Cache: HIT`): un archivo borrado del servidor puede seguir
+  sirviéndose hasta purgar la caché (Site Tools → Speed → Caching). Probar con `?x=1` para ver el origen real.
+- SiteGround devuelve 202 + `SG-Captcha` si ve muchas peticiones seguidas: `tools/smoke.sh` lo marca
+  como inconcluso (exit 3). Esperar unos minutos; no intentar saltar el captcha.
+- Verificación post-despliegue: `tools/smoke.sh --compare baseline.tsv --ssh cuidartelaserena`.
 - Producción usa git: rama `main` = `origin/main`. Desplegar con `git pull --ff-only`, nunca con zips/FTP.
   Antes de cambiar de rama en el servidor, respaldar `config/*.php` (no están versionados y no deben borrarse).
 - Windows: `core.autocrlf=true`; al comparar hashes con el servidor, normalizar LF.
@@ -38,6 +45,6 @@ Producción: https://cuidartelaserena.cl (SiteGround). Repo: github.com/xRazy121
 
 ## Pendientes conocidos
 - Rotar credenciales BD / Flow / SMTP (estuvieron en un zip público desde 29-abr-2026; zip ya retirado).
-- Corregir `display_errors` en producción; completar `database.example.php`.
+- Completar `database.example.php`.
 - CSRF, validación de subidas y rate limit del login admin sin revisar.
 - Copias sobrantes: `cuidarte-spa/` en el repo y `~/www/cuidartelaserena.cl/cuidarte-spa/` en el servidor.
