@@ -13,6 +13,9 @@ RewriteRule ^database/ - [F,L]
 RewriteRule ^\.amazonq/ - [F,L]
 RewriteRule ^database\.sql$ - [F,L]
 RewriteRule ^\.env$ - [F,L]
+RewriteRule ^composer\.(json|lock)$ - [F,L]
+RewriteRule \.(zip|sql|log|tgz|bak)$ - [F,L]
+RewriteRule ^php_errorlog$ - [F,L]
 
 # Permitir archivos y carpetas reales
 RewriteCond %{REQUEST_FILENAME} !-f
