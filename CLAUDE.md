@@ -24,7 +24,7 @@ Producción: https://cuidartelaserena.cl (SiteGround). Repo: github.com/xRazy121
 ## Gotchas
 - `Controller::render()` es **protected**: el router solo puede invocar métodos públicos (ej. `HomeController::notFound()`).
 - `config/database.php` y `config/smtp.php` tienen **credenciales y NO se versionan** (`.gitignore`).
-  `database.example.php` está incompleto (sin `getDB()` ni config de sesión): copiar de producción, nunca commitear.
+  Plantillas completas: `config/database.example.php` y `config/smtp.example.php` (copiar y rellenar; nunca commitear los reales).
 - SiteGround (nginx) sirve estáticos existentes **sin pasar por `.htaccess`**: nunca dejar zips, dumps, logs
   ni backups dentro de `public_html`. Backups en `~/backups/` (fuera de `www/`).
 - Errores PHP en producción: `display_errors=0` y log en `~/www/cuidartelaserena.cl/logs/php_errors.log`
@@ -46,12 +46,17 @@ Producción: https://cuidartelaserena.cl (SiteGround). Repo: github.com/xRazy121
 ## Seguridad: estado
 - CSRF: `csrfVerify()` en `config/database.php` (no versionado) es un no-op. `csrfCheck()` (`app/helpers/security.php`)
   valida y, por defecto, **solo registra** los POST sin token en `logs/php_errors.log` (`[CSRF] POST sin token válido: <ruta>`).
-  Para bloquear: `define('CSRF_ENFORCE', true)` en `config/database.php`, **después** de dar token a los formularios
-  que hoy no lo envían: `public/{reservar,servicios,activar,nueva_password}.php`, `cliente/perfil.php`, vistas admin de
-  blog/categorias/cupones/mensajes/productos/reservas/servicio_form, y los POST AJAX de `public/js/main.js`.
+  Ya envían token: todos los formularios públicos y de cliente, el checkout, los POST AJAX de `main.js`
+  (header `X-CSRF-Token`, con `CSRF_TOKEN` global en los layouts) y `carrito/{agregar,eliminar,actualizar,validarCupon}`.
+  Las vistas admin lo reciben por el inyector JS de `layouts/admin.php` (aún sin confirmar con tráfico real).
+  Para bloquear: `define('CSRF_ENFORCE', true)` en `config/database.php`, **solo tras** revisar el log y ver que no
+  quedan `[CSRF]` de formularios legítimos. Nota: `/carrito/aplicar-cupon` (main.js) no tiene método en `CarritoController`.
+- Assets JS: los layouts usan `assetUrl('public/js/x.js')` (`?v=<mtime>`) porque el servidor los cachea 1 año;
+  usar el mismo helper para cualquier JS/CSS nuevo.
 - Login admin y cliente: límite por IP (10 fallos / 15 min, archivos en `sys_get_temp_dir()/cuidarte_rl`).
 - `public/uploads/.htaccess` impide ejecutar scripts (el resto de `public/uploads/` no se versiona).
 - Credenciales: el usuario decidió (2026-10-16) **no rotar** las de BD/Flow/SMTP pese a la exposición previa del zip.
 
 ## Pendientes conocidos
-- Dar token CSRF a los formularios listados y activar `CSRF_ENFORCE` (revisar antes el log en busca de POST sin token).
+- Revisar `logs/php_errors.log` buscando `[CSRF]` (tras unos días de tráfico) y decidir `CSRF_ENFORCE`.
+- El baseline del smoke test es un archivo local (`--save`): no vive en el repo; regenerarlo si se pierde.
