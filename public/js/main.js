@@ -77,7 +77,7 @@ const addToCart = (variantId, cantidad = 1) => {
 
     fetch(BASE_URL + '/carrito/agregar', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRF-Token': (typeof CSRF_TOKEN !== 'undefined' ? CSRF_TOKEN : '') },
         body: `variante_id=${variantId}&cantidad=${cantidad}`
     })
     .then(r => r.json())
@@ -155,7 +155,7 @@ const removeFromCart = (variantId) => {
     if (!confirm('¿Eliminar este producto?')) return;
     fetch(BASE_URL + '/carrito/eliminar', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRF-Token': (typeof CSRF_TOKEN !== 'undefined' ? CSRF_TOKEN : '') },
         body: `variante_id=${variantId}`
     })
     .then(r => r.json())
@@ -166,7 +166,7 @@ const removeFromCart = (variantId) => {
 const updateCartQuantity = (variantId, cantidad) => {
     fetch(BASE_URL + '/carrito/actualizar', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRF-Token': (typeof CSRF_TOKEN !== 'undefined' ? CSRF_TOKEN : '') },
         body: `variante_id=${variantId}&cantidad=${cantidad}`
     })
     .then(r => r.json())
@@ -179,7 +179,7 @@ const applyCoupon = () => {
     if (!code) return;
     fetch(BASE_URL + '/carrito/aplicar-cupon', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRF-Token': (typeof CSRF_TOKEN !== 'undefined' ? CSRF_TOKEN : '') },
         body: `codigo=${code}`
     })
     .then(r => r.json())

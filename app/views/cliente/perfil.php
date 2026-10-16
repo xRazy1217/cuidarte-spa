@@ -9,6 +9,7 @@
 
 <div style="background:white;border-radius:16px;padding:2rem;box-shadow:0 2px 12px rgba(0,0,0,0.06);max-width:600px">
     <form method="POST">
+        <input type="hidden" name="csrf_token" value="<?= csrfToken() ?>">
         <div class="mb-3">
             <label class="wc-form-label">Nombre completo</label>
             <input type="text" name="nombre" class="wc-form-control" value="<?= htmlspecialchars($user['nombre']) ?>" required>
